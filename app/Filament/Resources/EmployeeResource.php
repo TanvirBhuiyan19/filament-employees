@@ -78,9 +78,6 @@ class EmployeeResource extends Resource
                 TextColumn::make('first_name')->sortable()->searchable(),
                 TextColumn::make('last_name')->sortable()->searchable(),
                 TextColumn::make('department.name')->sortable()->searchable(),
-                TextColumn::make('country.name')->sortable()->searchable(),
-                TextColumn::make('state.name')->sortable()->searchable(),
-                TextColumn::make('city.name')->sortable()->searchable(),
                 TextColumn::make('date_hired')->date()->sortable(),
                 TextColumn::make('created_at')->dateTime(),
             ])
@@ -89,6 +86,8 @@ class EmployeeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
