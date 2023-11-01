@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\CountryResource\RelationManagers;
 
-use App\Filament\Resources\EmployeeResource\Pages;
-use App\Filament\Resources\EmployeeResource\RelationManagers;
 use App\Models\City;
 use App\Models\Country;
-use App\Models\Employee;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -15,22 +12,19 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Collection;
 
-class EmployeeResource extends Resource
+class EmployeesRelationManager extends RelationManager
 {
-    protected static ?string $model = Employee::class;
+    protected static string $relationship = 'employees';
 
-    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -70,48 +64,34 @@ class EmployeeResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('first_name')
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('first_name')->sortable()->searchable(),
-                TextColumn::make('last_name')->sortable()->searchable(),
-                TextColumn::make('department.name')->sortable()->searchable(),
-                TextColumn::make('date_hired')->date()->sortable(),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('first_name'),
+                TextColumn::make('last_name'),
+                TextColumn::make('department.name'),
+                TextColumn::make('date_hired'),
             ])
             ->filters([
-                SelectFilter::make('department')->relationship('department', 'name')
+                //
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListEmployees::route('/'),
-            'create' => Pages\CreateEmployee::route('/create'),
-            'edit' => Pages\EditEmployee::route('/{record}/edit'),
-        ];
     }
 }
